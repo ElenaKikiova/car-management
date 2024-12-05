@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "mongodb": "mongod --dbpath=./mongodb"
   },
   "author": "Elena Kikiova 2101321039",
   "license": "ISC",
@@ -16,8 +17,7 @@
     "i": "^0.3.7",
     "mongodb": "^6.11.0",
     "nodemon": "^3.1.7",
-    "npm": "^10.9.2",
-    "sqlite3": "^5.1.7"
+    "npm": "^10.9.2"
   },
   "devDependencies": {
     "eslint": "^9.16.0"

@@ -1,20 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const { db } = require("../data/db.js");
+const { getDb } = require("../db/db.js");
 
-// Get all cars
-router.get("/", (req, res) => {
-	const query = `
-        SELECT cars.*, garages.*
-        FROM cars
-        JOIN garage_car ON cars.id = garage_car.car_id
-        JOIN garages ON garage_car.garage_id = garages.id;
-    `;
+// Get all cars and their garages
+router.get("/", async (req, res) => {
+  try {
+    const db = getDb();
+    const carsWithGarages = await db.collection('cars').aggregate([
+          {
+            $lookup: {
+              from: 'garages',
+              localField: 'garageIds',
+              foreignField: 'id',
+              as: 'garages'
+            }
+          }
+        ]).toArray();
 
-	db.all(query, (err, rows) => {
-		if (err) return res.status(500).send(err.message);
-		res.json(rows);
-	});
+        res.json(carsWithGarages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching cars");
+  }
 });
 
 module.exports = router;
