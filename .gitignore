@@ -43,7 +43,7 @@ node_modules/
 jspm_packages/
 
 # MongoDb
-mongodb/*
+mongodb/
 
 # TypeScript cache
 *.tsbuildinfo
