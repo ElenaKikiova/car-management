@@ -10,9 +10,9 @@ const PORT = 8088;
 
 // CORS config
 const corsOptions = {
-	origin: "http://localhost:3000",
-	methods: ["GET", "POST", "PUT", "DELETE"],
-	allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // Enable CORS
@@ -35,5 +35,4 @@ connectToDb().then(async () => {
     });
 }).catch((err) => {
     console.error("Error connecting to the database:", err);
-    process.exit(1);
 });

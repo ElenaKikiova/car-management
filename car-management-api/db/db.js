@@ -8,42 +8,42 @@ const dbName = "car-management-db";
 let db;
 
 async function connectToDb() {
-  try {
-    const client = await MongoClient.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    db = client.db(dbName);
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
-  }
+    try {
+        const client = await MongoClient.connect(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        db = client.db(dbName);
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        console.error("Error connecting to MongoDB:", err);
+    }
 }
 
 const initDb = async (db) => {
-  try {
-    await client.connect();
-    db = client.db(dbName);
+    try {
+        await client.connect();
+        db = client.db(dbName);
 
-    const carsCollection = db.collection('cars');
-    const garagesCollection = db.collection('garages');
+        const carsCollection = db.collection('cars');
+        const garagesCollection = db.collection('garages');
 
-    // Check if collections have data
-    const carCount = await carsCollection.countDocuments();
-    if (carCount === 0) {
-      await fillCarsData(db);
+        // Check if collections have data
+        const carCount = await carsCollection.countDocuments();
+        if (carCount === 0) {
+            await fillCarsData(db);
+        }
+
+        const garageCount = await garagesCollection.countDocuments();
+        if (garageCount === 0) {
+            await fillGaragesData(db);
+        }
+
+        console.log("Database initialized successfully");
+
+    } catch (err) {
+        console.error("Error initializing DB:", err);
     }
-
-    const garageCount = await garagesCollection.countDocuments();
-    if (garageCount === 0) {
-      await fillGaragesData(db);
-    }
-
-    console.log("Database initialized successfully");
-
-  } catch (err) {
-    console.error("Error initializing DB:", err);
-  }
 };
 
 const getDb = () => db;
