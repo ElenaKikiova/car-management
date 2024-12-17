@@ -4,6 +4,7 @@ const { connectToDb, initDb, deleteDb } = require("./db/db.js");
 
 const carRoutes = require("./routes/carRoutes");
 const garageRoutes = require("./routes/garageRoutes");
+const maintenanceRoutes = require("./routes/maintenanceRoutes");
 
 const app = express();
 const PORT = 8088;
@@ -29,6 +30,7 @@ connectToDb().then(async () => {
 
     app.use("/cars", carRoutes);
     app.use("/garages", garageRoutes);
+    app.use("/maintenance", maintenanceRoutes);
 
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

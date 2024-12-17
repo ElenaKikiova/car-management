@@ -77,5 +77,21 @@ const garages =
 	  }
 	];
 
+const maintenanceRecords = [
+    {
+        "id": 1,
+        "carId": 1,
+        "serviceType": "Fix",
+        "scheduledDate": "2024-12-10",
+        "garageId": 1,
+    },
+    {
+        "id": 2,
+        "carId": 5,
+        "serviceType": "Fix",
+        "scheduledDate": "2024-11-25",
+        "garageId": 3,
+    }
+]
 
-module.exports = { cars, garages };
+module.exports = { cars, garages, maintenanceRecords };

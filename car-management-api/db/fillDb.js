@@ -1,4 +1,4 @@
-const { cars, garages } = require('./initialData.js')
+const { cars, garages, maintenanceRecords } = require('./initialData.js')
 
 const fillCarsData = async (db) => {
     const carsCollection = db.collection('cars');
@@ -20,7 +20,19 @@ const fillGaragesData = async (db) => {
     }
 };
 
+const fillMaintenanceData = async (db) => {
+    const maintenanceCollection = db.collection('maintenance');
+    try {
+        await maintenanceCollection.insertMany(maintenanceRecords);
+        console.log("Initial maintenance data uploaded");
+    } catch (err) {
+        console.error('Error inserting maintenance data:', err);
+    }
+};
+
+
 module.exports = {
     fillCarsData,
-    fillGaragesData
+    fillGaragesData,
+    fillMaintenanceData
 };

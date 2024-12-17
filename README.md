@@ -1,7 +1,9 @@
 #Setup
 
 1. Install Node, npm, MongoDb - used versions are Node v21.5.0 and MongoDb v6.0.18
-2. Clone this project and run `npm i` in `car-management-api`
+2. Clone this project
+3. Run `npm install serve` in `car-management-frontend`
+4. Run `npm i` in `car-management-api`
 
 #Run
 

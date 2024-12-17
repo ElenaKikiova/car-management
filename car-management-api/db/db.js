@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { fillCarsData, fillGaragesData } = require("./fillDb.js");
+const { fillCarsData, fillGaragesData, fillMaintenanceData } = require("./fillDb.js");
 
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
@@ -27,6 +27,7 @@ const initDb = async (db) => {
 
         const carsCollection = db.collection('cars');
         const garagesCollection = db.collection('garages');
+        const maintenanceCollection = db.collection('maintenance');
 
         // Check if collections have data
         const carCount = await carsCollection.countDocuments();
@@ -37,6 +38,11 @@ const initDb = async (db) => {
         const garageCount = await garagesCollection.countDocuments();
         if (garageCount === 0) {
             await fillGaragesData(db);
+        }
+
+        const maintenanceRecordsCount = await maintenanceCollection.countDocuments();
+        if (maintenanceRecordsCount === 0) {
+            await fillMaintenanceData(db);
         }
 
         console.log("Database initialized successfully");
