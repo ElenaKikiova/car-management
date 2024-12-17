@@ -45,7 +45,7 @@ const getAllCars = async (req, res) => {
 
         const carsWithGarages = await db.collection('cars').aggregate(request).toArray();
 
-        res.json(carsWithGarages);
+        res.status(200).json(carsWithGarages);
     } catch (err) {
         console.error(err);
         res.status(400).send("Error fetching cars");
@@ -82,7 +82,7 @@ const getCarById = async (req, res) => {
         res.json(carWithGarage[0]);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error fetching car");
+        res.status(400).send("Error fetching car");
     }
 };
 
@@ -114,11 +114,12 @@ const createCar = async (req, res) => {
 
             // Return the new car with its garages
             return res.status(200).send({ ...newCar, garages});
+        } else {
+            res.status(400).send("Error creating car");
         }
-
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error creating car");
+        res.status(400).send("Error creating car");
     }
 };
 
@@ -134,9 +135,8 @@ const updateCar = async (req, res) => {
 
         let updateData = req.body;
 
-        // Delete populated garages and the _id field
+        // Delete populated garages
         delete updateData.garages;
-        delete updateData._id;
 
         // Parse the garage id's to integers
         updateData = { ...updateData, garageIds: updateData.garageIds.map((garageId) => parseInt(garageId)) };
@@ -176,7 +176,7 @@ const deleteCar = async (req, res) => {
         res.status(200).send("Car deleted successfully");
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error deleting car");
+        res.status(400).send("Error deleting car");
     }
 };
 
