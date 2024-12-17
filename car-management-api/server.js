@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { connectToDb, initDb, deleteDb } = require("./db/db.js");
 
-const carController = require("./controllers/carController");
+const carRoutes = require("./routes/carRoutes");
 const garagesController = require("./controllers/garagesController");
 
 const app = express();
@@ -27,7 +27,7 @@ connectToDb().then(async () => {
 
     initDb();
 
-    app.use("/cars", carController);
+    app.use("/cars", carRoutes);
     app.use("/garages", garagesController);
 
     app.listen(PORT, () => {
