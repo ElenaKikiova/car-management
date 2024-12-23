@@ -100,7 +100,7 @@ const createCar = async (req, res) => {
 
         // Get last car's id and increment it
         const lastEntry = await db.collection("cars").findOne({}, { sort: { _id: -1 } });
-        newCar.id = lastEntry.id + 1;
+        newCar.id = lastEntry.id ? lastEntry.id + 1 : 1;
 
         // Parse garage ids to integers
         newCar.garageIds = garageIds.map((garageId) => parseInt(garageId));

@@ -78,20 +78,62 @@ const garages =
 	];
 
 const maintenanceRecords = [
-    {
-        "id": 1,
-        "carId": 1,
-        "serviceType": "Fix",
-        "scheduledDate": "2024-12-10",
-        "garageId": 1,
-    },
-    {
-        "id": 2,
-        "carId": 5,
-        "serviceType": "Fix",
-        "scheduledDate": "2024-11-25",
-        "garageId": 3,
-    }
+   {
+       "id": 1,
+       "carId": 1,
+       "serviceType": "Fix",
+       "scheduledDate": "2024-12-10",
+       "garageId": 1,
+   },
+   {
+       "id": 2,
+       "carId": 5,
+       "serviceType": "Fix",
+       "scheduledDate": "2024-11-25",
+       "garageId": 3,
+   },
+   {
+       "id": 3,
+       "carId": 4,
+       "garageId": 1,
+       "serviceType": "Oil change",
+       "scheduledDate": "2024-12-18",
+   },
+   {
+       "id": 4,
+       "carId": 6,
+       "garageId": 3,
+       "serviceType": "Oil change",
+       "scheduledDate": "2024-12-17",
+   },
+   {
+       "id": 5,
+       "carId": 5,
+       "garageId": 3,
+       "serviceType": "Oil change",
+       "scheduledDate": "2024-12-16",
+   },
+   {
+       "id": 6,
+       "carId": 3,
+       "garageId": 2,
+       "serviceType": "Fix",
+       "scheduledDate": "2024-12-14",
+   },
+   {
+       "id": 7,
+       "carId": 5,
+       "garageId": 2,
+       "serviceType": "Fix",
+       "scheduledDate": "2024-12-14",
+   },
+   {
+       "id": 8,
+       "carId": 1,
+       "garageId": 2,
+       "serviceType": "Fix",
+       "scheduledDate": "2024-12-12",
+   }
 ]
 
 module.exports = { cars, garages, maintenanceRecords };

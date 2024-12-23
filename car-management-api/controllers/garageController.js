@@ -60,7 +60,7 @@ const createGarage = async (req, res) => {
 
         // Get the last garage id and increment it
         const lastGarage = await db.collection("garages").findOne({}, { sort: { id: -1 } });
-        newGarage.id = lastGarage.id + 1;
+        newGarage.id = lastGarage.id ? lastGarage.id + 1 : 1;
 
         const result = await db.collection("garages").insertOne(newGarage);
         console.error(result);
