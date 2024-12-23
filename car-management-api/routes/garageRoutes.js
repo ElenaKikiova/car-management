@@ -5,10 +5,12 @@ const {
     getGarageById,
     createGarage,
     updateGarage,
-    deleteGarage
+    deleteGarage,
+    generateGarageReport
 } = require("../controllers/garageController");
 
 router.get("/", getAllGarages);
+router.get("/dailyAvailabilityReport", generateGarageReport);
 router.get("/:id", getGarageById);
 router.post("/", createGarage);
 router.put("/:id", updateGarage);

@@ -129,10 +129,83 @@ const deleteGarage = async (req, res) => {
     }
 };
 
+// Generate report for a specific garage for startDate-endDate period
+const generateGarageReport = async (req, res) => {
+    try {
+        const db = getDb();
+
+        const { garageId, startDate, endDate } = req.query;
+
+        // Validate input
+        if (!garageId) {
+            return res.status(400).send("Missing garage id");
+        }
+
+        if (startDate > endDate) {
+            return res.status(400).send("Start date shoudl be before end date");
+        }
+
+        const parsedStartDate = new Date(startDate);
+        const parsedEndDate = new Date(endDate);
+        if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
+            return res.status(400).send("Invalid date format");
+        }
+
+        // Get garage by id
+        const garage = await db.collection("garages").findOne({ id: parseInt(garageId) });
+        if (!garage) {
+            return res.status(404).send("There is no garage with this id");
+        }
+
+        // Get garage maintenance records between the set dates
+        const maintenances = await db.collection("maintenance").aggregate([
+            {
+                $match: {
+                    garageId: parseInt(garageId),
+                    scheduledDate: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$scheduledDate",
+                    requests: { $sum: 1 },
+                },
+            },
+        ]).toArray();
+
+        // Combine report data
+        const report = [];
+        const currentDate = new Date(parsedStartDate);
+        while (currentDate <= parsedEndDate) {
+            const dateString = currentDate.toISOString().split("T")[0];
+            const dayData = maintenances.find((m) => m._id === dateString);
+            const requestsForThatDay = dayData ? dayData.requests : 0;
+            const availableCapacity = garage.capacity - requestsForThatDay;
+
+            report.push({
+                date: dateString,
+                requests: requestsForThatDay,
+                availableCapacity: availableCapacity
+            });
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        res.status(200).json(report);
+    } catch (err) {
+        console.error(err);
+        res.status(400).send("Error generating report");
+    }
+};
+
 module.exports = {
     getAllGarages,
     getGarageById,
     createGarage,
     updateGarage,
     deleteGarage,
+    generateGarageReport
 };
