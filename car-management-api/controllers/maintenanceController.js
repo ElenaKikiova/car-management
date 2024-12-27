@@ -24,7 +24,7 @@ const populateMaintenanceRecordData = async (db, query) => {
     const maintenanceRecords = await db.collection('maintenance').aggregate(request).toArray();
 
     if(maintenanceRecords.length === 0){
-        return false;
+        return [];
     }
 
     // Extract only car name (make + model) and garage name. Delete the car and garage objects
@@ -58,16 +58,16 @@ const getAllMaintenanceRecords = async (req, res) => {
         }
 
         if (startDate && endDate) {
-            query.date = { $gte:startDate, $lte: endDate };
+            query.scheduledDate = { $gte:startDate, $lte: endDate };
         } else if (startDate) {
-            query.date = { $gte: startDate };
+            query.scheduledDate = { $gte: startDate };
         } else if (endDate) {
-            query.date = { $lte: endDate };
+            query.scheduledDate = { $lte: endDate };
         }
 
         const maintenanceRecords = await populateMaintenanceRecordData(db, query);
 
-        if(maintenanceRecords){
+        if(maintenanceRecords.length){
             res.status(200).json(maintenanceRecords);
         }
         else {
@@ -87,7 +87,7 @@ const getMaintenanceRecordById = async (req, res) => {
 
         const maintenanceRecord = await populateMaintenanceRecordData(db, { id });
 
-        if(maintenanceRecord){
+        if(maintenanceRecord.length){
             res.status(200).json(maintenanceRecord[0]);
         }
         else {
@@ -184,11 +184,67 @@ const deleteMaintenanceRecord = async (req, res) => {
     }
 };
 
+// Generate a monthly request report for each garage
+const generateMonthlyRequestsReport = async (req, res) => {
+    try {
+        const db = getDb();
+        const { garageId, startMonth, endMonth } = req.query;
+
+        if (!garageId || !startMonth || !endMonth) {
+            return res.status(400).send("Missing required parameters");
+        }
+
+        // Get the first day of the start month and the last day of the end month
+        const startDate = new Date(startMonth + "-01");
+        const endDate = new Date(endMonth);
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(0);
+
+
+        // Receives a date string and returns a YYYY-mm string
+        const getYYYYmm = (date) => {
+            const split = date.split('-');
+            return split[0] + "-" + split[1];
+        }
+
+        // Receives a date string and returns a YYYY-mm-DD string
+        const getYYYYmmDD = (date) => date.toISOString().split('T')[0];
+
+        const requests = await populateMaintenanceRecordData(db,
+            { scheduledDate: {
+            $gte: getYYYYmmDD(startDate),
+            $lte: getYYYYmmDD(endDate) } });
+
+        const requestsPerMonth = Object.groupBy(requests, (request) => getYYYYmm(request.scheduledDate));
+
+        let maintenanceRecords = [];
+        let currentMonth = new Date(startDate);
+        while (currentMonth <= endDate) {
+            const year = currentMonth.getFullYear();
+            const monthName = currentMonth.toLocaleString('default', { month: 'long' }).toUpperCase();
+            const monthIndex = currentMonth.getMonth();
+            const requests = requestsPerMonth[getYYYYmm(currentMonth.toISOString())];
+
+            maintenanceRecords.push({
+                "yearMonth": monthName + " " + year,
+                "requests": requests ? requests.length : 0
+            });
+            currentMonth.setMonth(monthIndex + 1);
+        }
+
+        res.status(200).json(maintenanceRecords);
+
+    } catch (err) {
+        console.error(err);
+        res.status(400).send("Error generating monthly report");
+    }
+};
+
 module.exports = {
     getAllMaintenanceRecords,
     getMaintenanceRecordById,
     createMaintenanceRecord,
     updateMaintenanceRecord,
     deleteMaintenanceRecord,
-    deleteMaintenanceRecord
+    generateMonthlyRequestsReport
 }

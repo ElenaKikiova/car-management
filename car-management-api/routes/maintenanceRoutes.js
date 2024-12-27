@@ -5,10 +5,12 @@ const {
     getMaintenanceRecordById,
     createMaintenanceRecord,
     updateMaintenanceRecord,
-    deleteMaintenanceRecord
+    deleteMaintenanceRecord,
+    generateMonthlyRequestsReport
 } = require("../controllers/maintenanceController");
 
 router.get("/", getAllMaintenanceRecords);
+router.get("/monthlyRequestsReport", generateMonthlyRequestsReport);
 router.get("/:id", getMaintenanceRecordById);
 router.post("/", createMaintenanceRecord);
 router.put("/:id", updateMaintenanceRecord);
